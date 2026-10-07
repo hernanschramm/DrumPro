@@ -1,9 +1,13 @@
 // ============================================================
 // DrumPro - Aplicación Principal
 // Navegación inferior entre las 5 secciones principales
+// Integración con Capacitor para funcionalidades nativas Android
 // ============================================================
 
 import React, { useState, useEffect } from 'react';
+import { App as CapApp } from '@capacitor/app';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { AppProvider, useAppState } from './store/AppContext';
 import Metronome from './features/metronome/Metronome';
 import PracticeTrainer from './features/entrenador/PracticeTrainer';
@@ -30,12 +34,61 @@ function DrumProApp() {
   const [activeTab, setActiveTab] = useState<Tab>('metronome');
   const [stageMode, setStageMode] = useState(false);
 
-  // Aplicar tema al documento
+  // Aplicar tema al documento y status bar nativa
   useEffect(() => {
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(state.theme);
     document.documentElement.setAttribute('data-theme', state.theme);
+
+    // Actualizar status bar nativa de Android
+    try {
+      StatusBar.setStyle({
+        style: state.theme === 'dark' ? Style.Dark : Style.Light,
+      });
+      StatusBar.setBackgroundColor({
+        color: state.theme === 'dark' ? '#111827' : '#f9fafb',
+      });
+    } catch (e) {
+      // No está en entorno nativo, ignorar
+    }
   }, [state.theme]);
+
+  // Manejo del botón atrás de Android
+  useEffect(() => {
+    let backListener: any;
+    
+    try {
+      backListener = CapApp.addListener('backButton', ({ canGoBack }) => {
+        if (stageMode) {
+          setStageMode(false);
+        } else if (activeTab !== 'metronome') {
+          setActiveTab('metronome');
+        } else if (!canGoBack) {
+          // Mostrar confirmación para salir
+          if (confirm('¿Salir de DrumPro?')) {
+            CapApp.exitApp();
+          }
+        }
+      });
+    } catch (e) {
+      // No está en entorno nativo
+    }
+
+    return () => {
+      if (backListener) {
+        backListener.remove();
+      }
+    };
+  }, [stageMode, activeTab]);
+
+  // Ocultar splash screen cuando la app está lista
+  useEffect(() => {
+    try {
+      SplashScreen.hide({ fadeOutDuration: 300 });
+    } catch (e) {
+      // No está en entorno nativo
+    }
+  }, []);
 
   // Modo escenario
   if (stageMode) {

@@ -1,0 +1,32 @@
+{
+  "name": "DrumPro - Metrónomo para Bateristas",
+  "short_name": "DrumPro",
+  "description": "Metrónomo profesional, entrenador de práctica, biblioteca de canciones y secuenciador para bateristas",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "lang": "es",
+  "categories": ["music", "entertainment"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

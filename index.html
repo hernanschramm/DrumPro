@@ -2,10 +2,22 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>DrumPro - Metrónomo y Herramienta para Bateristas</title>
     <meta name="description" content="Metrónomo profesional, entrenador de práctica, biblioteca de canciones y secuenciador para bateristas" />
-    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="theme-color" content="#111827" />
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <!-- Android / Mobile -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="application-name" content="DrumPro" />
+    <meta name="apple-mobile-web-app-title" content="DrumPro" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -95,5 +107,15 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Registrar Service Worker para funcionalidad offline
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((reg) => console.log('SW registrado:', reg.scope))
+            .catch((err) => console.log('SW error:', err));
+        });
+      }
+    </script>
   </body>
 </html>
