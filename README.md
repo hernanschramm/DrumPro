@@ -1,239 +1,269 @@
-# 🥁 DrumPro - Metrónomo Profesional para Bateristas
+# 🥁 DrumPro Academy
 
-Aplicación profesional para bateristas que practican, ensayan y tocan en vivo. Construida con React + Capacitor para funcionar como PWA web y app nativa Android.
+**Plataforma Profesional de Enseñanza de Batería**
 
-![DrumPro](https://img.shields.io/badge/version-1.0.0-orange)
-![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Android-blue)
-![License](https://img.shields.io/badge/license-Proprietary-red)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-blue.svg)](https://tailwindcss.com/)
+[![Capacitor](https://img.shields.io/badge/Capacitor-5-purple.svg)](https://capacitorjs.com/)
 
-## ✨ Características
+## 📖 Descripción
 
-### 🎵 Metrónomo Profesional
-- BPM de 20 a 400 con precisión de audio (Web Audio API)
-- Compases: 2/4, 3/4, 4/4, 5/4, 6/8, 7/8, 9/8, 12/8 y personalizado
-- Subdivisiones: negras, corcheas, tresillos, semicorcheas y swing
-- 4 sonidos: click, cowbell, hi-hat, madera
-- Acentos configurables por pulso (fuerte, medio, suave, silencio)
-- Tap tempo y flash visual en pulso fuerte
-- Funciona con pantalla apagada
+DrumPro Academy es una plataforma web progresiva (PWA) diseñada para la enseñanza de batería, que conecta profesores con alumnos a través de herramientas profesionales de práctica, evaluación y seguimiento del progreso.
 
-### 🏋️ Entrenador de Práctica
-- **Modo silenciar compases**: suena N compases y descansa M compases
-- **Aumento gradual de tempo**: sube X BPM cada N compases automáticamente
-- Temporizador de sesión con registro diario del tiempo de práctica
+### Características Principales
 
-### 🎸 Biblioteca de Canciones y Setlists
-- CRUD completo de canciones con BPM, compás, duración y notas
-- Estructura de canción (intro, estrofa, estribillo, puente)
-- Setlists para shows con reordenamiento
-- Duración total estimada del setlist
-- **Modo escenario**: fuente grande, fondo oscuro, botones gigantes, pantalla siempre encendida
+- 👥 **Sistema multi-rol**: Administrador, Profesor y Alumno
+- 📅 **Gestión de clases**: Calendario, videollamadas, materiales
+- 📝 **Sistema de tareas**: Grabación de video/audio, calificación con rúbricas
+- 📊 **Evaluaciones**: Seguimiento del progreso con gráficos
+- 📚 **Biblioteca**: 40 rudimentos PAS + 22 grooves por estilo
+- 🎵 **Metrónomo profesional**: Baja latencia, múltiples subdivisiones
+- 🎛️ **Multitrack Player**: Reproducción de stems, detección de BPM
+- 🎼 **Piano Roll**: Visualización de notas detectadas
+- 📱 **Contenido para redes**: Grabación vertical 9:16
 
-### 🥁 Editor de Patrones (Secuenciador)
-- Grilla de 16 pasos
-- 6 instrumentos: bombo, caja, hi-hat cerrado, hi-hat abierto, tom, platillo
-- Patrones predefinidos: rock, funk, reggaeton
-- Reproducción en loop con BPM configurable
-- Guardado y carga de patrones
+## 🚀 Inicio Rápido
 
-### ⚙️ Ajustes
-- Tema claro y oscuro
-- Exportar/importar biblioteca en JSON
-- Estadísticas de tiempo de práctica
-- 100% offline - todos los datos se guardan localmente
+### Requisitos
 
-## 🚀 Instalación Rápida
+- Node.js 18+ y npm
+- Navegador moderno (Chrome, Firefox, Edge, Safari)
+- Para Android: Android Studio + dispositivo/emulador
 
-### Como PWA (Web)
-
-1. Abre la URL en Chrome/Edge
-2. Menú → "Añadir a pantalla de inicio"
-3. ¡Listo! Funciona offline
-
-### Como APK Android
+### Instalación
 
 ```bash
-# Clonar repositorio
-git clone <tu-repo>
-cd drumpro
+# Clonar el repositorio
+git clone <url-del-repositorio>
+cd drumpro-academy
 
 # Instalar dependencias
 npm install
 
-# Compilar y abrir en Android Studio
-bash build-android.sh
+# Iniciar servidor de desarrollo
+npm run dev
 ```
 
-O manualmente:
+Abre tu navegador en `http://localhost:5173`
+
+### Credenciales de Prueba
+
+| Rol | Email | Contraseña |
+|-----|-------|------------|
+| Admin | admin@drumpro.com | cualquier |
+| Profesor | carlos@drumpro.com | cualquier |
+| Alumno | juan@drumpro.com | cualquier |
+
+## 📱 Probar en Android
+
+### Opción 1: Script Automático (Recomendado)
 
 ```bash
-npm install
+chmod +x build-android.sh
+./build-android.sh
+```
+
+### Opción 2: Manual
+
+```bash
+# Compilar aplicación
 npm run build
+
+# Instalar Capacitor
+npm install @capacitor/core @capacitor/android
 npx cap add android
+
+# Sincronizar y abrir en Android Studio
 npx cap sync android
 npx cap open android
 ```
 
-Luego en Android Studio: Build → Build APK
+Luego en Android Studio:
+1. Espera a que indexe los archivos
+2. Conecta tu dispositivo o inicia emulador
+3. Click en ▶️ (Run) o Shift+F10
 
-📖 **Guía completa**: Ver [QUICK_START_APK.md](QUICK_START_APK.md)
+📖 **Guía completa**: [GUIA_ANDROID.md](GUIA_ANDROID.md)
 
-## 📱 Capturas de Pantalla
+## 📊 Estado del Proyecto
 
-| Metrónomo | Entrenador | Canciones | Patrones |
-|-----------|------------|-----------|----------|
-| ![Metronome](screenshots/metronome.png) | ![Practice](screenshots/practice.png) | ![Songs](screenshots/songs.png) | ![Patterns](screenshots/patterns.png) |
+**Progreso: 10/13 fases completadas (77%)**
 
-## 🛠️ Tecnologías
+### ✅ Fases Completadas
 
-- **Frontend**: React 18 + TypeScript + Tailwind CSS
-- **Audio**: Web Audio API (baja latencia)
-- **Estado**: React Context + useReducer
-- **Persistencia**: localStorage
-- **Nativo**: Capacitor (Android)
-- **Build**: Vite
+1. ✅ Modelo de datos y autenticación
+2. ✅ Gestión de clases y calendario
+3. ✅ Sistema de tareas y entregas
+4. ✅ Evaluaciones y progreso
+5. ✅ Biblioteca y metrónomo
+6. ✅ Videollamadas
+7. ✅ Multitrack player
+8. ✅ Detección de notas y piano roll
+9. ✅ Contenido para redes sociales
+10. ✅ Configuración para Android
 
-## 📂 Estructura del Proyecto
+### 🔄 Fases Pendientes
+
+11. ⏳ Evaluador de tiempo y MIDI
+12. ⏳ Gamificación y modo offline
+13. ⏳ Pruebas finales y publicación
+
+## 🏗️ Arquitectura
 
 ```
-drumpro/
-├── android/                    # Proyecto Android nativo (Capacitor)
-├── public/
-│   ├── icon.svg               # Icono SVG
-│   ├── icon-192.png           # Icono PWA 192px
-│   ├── icon-512.png           # Icono PWA 512px
-│   ├── manifest.json          # Manifiesto PWA
-│   ├── sw.js                  # Service Worker
-│   └── generate-icons.html    # Generador de iconos
+┌─────────────────────────────────────────┐
+│         Frontend (React + TypeScript)   │
+│  ┌──────────┐  ┌──────────┐  ┌──────┐ │
+│  │  Auth    │  │  Clases  │  │ Tareas│ │
+│  └──────────┘  └──────────┘  └──────┘ │
+│  ┌──────────┐  ┌──────────┐  ┌──────┐ │
+│  │Biblioteca│  │Multitrack│  │Redes │ │
+│  └──────────┘  └──────────┘  └──────┘ │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│         Backend (Supabase)              │
+│  ┌──────────┐  ┌──────────┐  ┌──────┐ │
+│  │   Auth   │  │Database  │  │Storage│ │
+│  └──────────┘  └──────────┘  └──────┘ │
+└─────────────────────────────────────────┘
+```
+
+## 📁 Estructura del Proyecto
+
+```
+drumpro-academy/
 ├── src/
-│   ├── audio/
-│   │   ├── MetronomeEngine.ts     # Motor de audio del metrónomo
-│   │   └── SequencerEngine.ts     # Motor de audio del secuenciador
-│   ├── features/
-│   │   ├── metronome/         # Módulo del metrónomo
-│   │   ├── entrenador/        # Entrenador de práctica
-│   │   ├── canciones/         # Biblioteca de canciones y setlists
-│   │   ├── patrones/          # Editor de patrones
-│   │   ├── setlists/          # Modo escenario
-│   │   └── ajustes/           # Configuración
-│   ├── store/
-│   │   └── AppContext.tsx     # Estado global
-│   ├── types/
-│   │   └── index.ts          # Tipos TypeScript
-│   ├── App.tsx               # Componente principal
-│   ├── main.tsx              # Entry point
-│   └── index.css             # Estilos globales
-├── capacitor.config.ts       # Configuración Capacitor
-├── build-android.sh          # Script de build automático
-├── QUICK_START_APK.md        # Guía rápida para APK
-├── ANDROID_BUILD_GUIDE.md    # Guía completa para Google Play
-└── package.json
+│   ├── features/          # Módulos de la aplicación
+│   │   ├── auth/         # Autenticación
+│   │   ├── admin/        # Panel administrador
+│   │   ├── profesor/     # Panel profesor
+│   │   ├── alumno/       # Panel alumno
+│   │   ├── clases/       # Clases y videollamadas
+│   │   ├── tareas/       # Tareas y entregas
+│   │   ├── evaluaciones/ # Evaluaciones
+│   │   ├── progreso/     # Panel de progreso
+│   │   ├── biblioteca/   # Biblioteca y metrónomo
+│   │   ├── multitrack/   # Multitrack y piano roll
+│   │   └── redes/        # Grabación para redes
+│   ├── store/            # Estado global
+│   ├── types/            # Tipos TypeScript
+│   └── App.tsx           # Componente principal
+├── docs/                 # Documentación técnica
+├── FASE*_ENTREGABLES.md  # Documentación por fase
+├── GUIA_ANDROID.md       # Guía para Android
+└── build-android.sh      # Script de build
 ```
 
-## 🎯 Uso
-
-### Metrónomo
-1. Selecciona BPM (20-400)
-2. Elige compás (4/4, 3/4, etc.)
-3. Selecciona subdivisión
-4. Elige sonido (click, cowbell, hi-hat, madera)
-5. Configura acentos si es necesario
-6. Presiona ▶️ para iniciar
-
-**Atajos de teclado:**
-- `Espacio`: Play/Stop
-- `T`: Tap Tempo
-
-### Entrenador de Práctica
-1. Configura BPM base
-2. Activa "Silenciar compases" para trabajar tiempo interno
-3. O activa "Aumento gradual" para subir tempo automáticamente
-4. Presiona ▶️ para iniciar sesión
-
-### Modo Escenario
-1. Crea un setlist con tus canciones
-2. Presiona el botón "🎤 Escenario"
-3. Navega entre canciones con ← →
-4. Play/Stop con Espacio
-5. Pantalla siempre encendida automáticamente
-
-## 📦 Publicar en Google Play
-
-### Requisitos
-- Cuenta de desarrollador de Google Play ($25 USD)
-- Android Studio instalado
-- Keystore de firma creado
-
-### Pasos
-1. Genera iconos (512x512, 192x192, feature graphic 1024x500)
-2. Crea keystore de firma
-3. Configura firma en `android/app/build.gradle`
-4. Genera AAB firmado
-5. Sube a Google Play Console
-6. Completa ficha de la tienda
-
-📖 **Guía detallada**: Ver [ANDROID_BUILD_GUIDE.md](ANDROID_BUILD_GUIDE.md)
-
-## 🔧 Comandos
+## 🛠️ Comandos Disponibles
 
 ```bash
 # Desarrollo
-npm run dev              # Servidor de desarrollo
-
-# Build
+npm run dev              # Iniciar servidor de desarrollo
 npm run build            # Compilar para producción
+npm run preview          # Vista previa de producción
 
 # Android
-bash build-android.sh    # Build completo + abrir Android Studio
-npx cap sync android     # Sincronizar cambios
+./build-android.sh       # Build automático para Android
+npx cap sync android     # Sincronizar archivos
 npx cap open android     # Abrir en Android Studio
 
-# Iconos
-# Abre public/generate-icons.html en el navegador
+# Utilidades
+npm run lint             # Ejecutar linter
+npm run format           # Formatear código
 ```
 
-## 🐛 Debugging
+## 🎯 Características Detalladas
 
-### Ver logs en tiempo real
-```bash
-adb logcat | grep -i "capacitor\|chromium"
-```
+### Para Profesores
+- Crear y gestionar clases con calendario
+- Asignar tareas con consignas detalladas
+- Calificar entregas con rúbricas configurables
+- Realizar videollamadas con chat integrado
+- Seguimiento del progreso de alumnos
+- Crear evaluaciones periódicas
 
-### Debug remoto con Chrome
-1. Activa "Modo desarrollador" y "Depuración USB" en Android
-2. Conecta por USB
-3. Chrome → `chrome://inspect`
-4. Selecciona tu dispositivo
+### Para Alumnos
+- Ver clases programadas y unirse a videollamadas
+- Entregar tareas con grabación de video/audio
+- Ver calificaciones y feedback de profesores
+- Practicar con metrónomo profesional
+- Estudiar biblioteca de rudimentos y grooves
+- Practicar con multitrack player
+- Analizar notas con piano roll
+- Grabar videos para redes sociales
 
-## 📊 Roadmap
+### Para Administradores
+- Gestionar usuarios (profesores y alumnos)
+- Asignar alumnos a profesores
+- Ver métricas globales de la plataforma
+- Moderar contenido
 
-- [ ] Agregar sonidos personalizados (importar .wav/.mp3)
-- [ ] Modo metrónomo con vibración
-- [ ] Exportar patrones como MIDI
-- [ ] Sincronización con otros dispositivos (Bluetooth)
-- [ ] Estadísticas avanzadas de práctica
-- [ ] Tutoriales interactivos
-- [ ] Modo nocturno automático
-- [ ] Backup en la nube (opcional)
+## 📚 Documentación
 
-## 📄 Licencia
+- [Resumen del Proyecto](RESUMEN_PROYECTO.md) - Estado general
+- [Guía para Android](GUIA_ANDROID.md) - Instalación en móvil
+- [Fase 1](FASE1_ENTREGABLES.md) - Autenticación
+- [Fase 2](FASE2_ENTREGABLES.md) - Clases
+- [Fase 3](FASE3_ENTREGABLES.md) - Tareas
+- [Fase 4](FASE4_ENTREGABLES.md) - Evaluaciones
+- [Fase 5](FASE5_ENTREGABLES.md) - Biblioteca
+- [Fase 6](FASE6_ENTREGABLES.md) - Videollamadas
+- [Fase 7](FASE7_ENTREGABLES.md) - Multitrack
+- [Fase 8](FASE8_ENTREGABLES.md) - Piano Roll
+- [Fase 9](FASE9_ENTREGABLES.md) - Redes Sociales
+- [Arquitectura](docs/ARQUITECTURA.md) - Diagrama técnico
+- [Base de Datos](docs/database.sql) - Schema SQL
+- [Riesgos](docs/RIESGOS.md) - Análisis de riesgos
 
-Todos los derechos reservados.
+## 🔧 Tecnologías
+
+### Frontend
+- **React 18** - Framework de UI
+- **TypeScript** - Tipado estático
+- **Vite** - Build tool
+- **Tailwind CSS** - Estilos
+- **React Router** - Navegación
+
+### Audio/Video
+- **Web Audio API** - Audio de baja latencia
+- **MediaRecorder API** - Grabación
+- **Canvas API** - Visualizaciones
+
+### Backend (Simulado)
+- **Supabase** - Autenticación y BD
+- **LocalStorage** - Persistencia
+
+### Mobile
+- **Capacitor** - Wrapper nativo
+- **Web Share API** - Compartir
+
+## 📱 Plataformas Soportadas
+
+- ✅ Web (Chrome, Firefox, Edge, Safari)
+- ✅ Android (vía Capacitor)
+- 🔄 iOS (pendiente de pruebas)
+- 🔄 PWA (instalable en móvil)
 
 ## 🤝 Contribuciones
 
-Este es un proyecto privado. Para reportar bugs o sugerir mejoras, contacta al desarrollador.
+Este es un proyecto de demostración. Para sugerencias o mejoras:
 
-## 📞 Soporte
+1. Revisa las fases pendientes
+2. Reporta bugs con detalles
+3. Sugiere nuevas funcionalidades
 
-Si tienes problemas:
-1. Revisa [QUICK_START_APK.md](QUICK_START_APK.md)
-2. Verifica que Android Studio esté actualizado
-3. Asegúrate de tener Java JDK 17 instalado
-4. Limpia el proyecto: Build → Clean Project
+## 📄 Licencia
+
+Este proyecto es una demostración educativa.
+
+## 📞 Contacto
+
+Para más información sobre el proyecto, consulta la [documentación completa](RESUMEN_PROYECTO.md).
 
 ---
 
-**Hecho con 🥁 para bateristas por bateristas**
+**Desarrollado con ❤️ para la comunidad de bateristas**
 
-**DrumPro v1.0.0** - 2026
+🥁 **DrumPro Academy** - Aprende, practica, mejora

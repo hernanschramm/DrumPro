@@ -9,6 +9,7 @@ import { MultitrackEngine, StemTrack } from '../data/MultitrackEngine';
 import { BpmDetector, BpmDetectionResult } from '../data/BpmDetector';
 import { NoteDetector, DetectedNote } from '../data/NoteDetector';
 import PianoRoll from './PianoRoll';
+import SocialRecorder from '../../redes/presentation/SocialRecorder';
 
 interface MultitrackPlayerProps {
   songTitle: string;
@@ -40,6 +41,9 @@ export default function MultitrackPlayer({ songTitle, artist, stems = [], onClos
   const [selectedInstrument, setSelectedInstrument] = useState<'guitar' | 'bass' | 'keys'>('guitar');
   const [isDetectingNotes, setIsDetectingNotes] = useState(false);
   const [showPianoRoll, setShowPianoRoll] = useState(false);
+  
+  // Estados para grabación de video
+  const [showSocialRecorder, setShowSocialRecorder] = useState(false);
 
   const engineRef = useRef<MultitrackEngine | null>(null);
   const bpmDetectorRef = useRef<BpmDetector | null>(null);
@@ -312,6 +316,14 @@ export default function MultitrackPlayer({ songTitle, artist, stems = [], onClos
             </button>
           </div>
 
+          {/* Botón para grabar video para redes */}
+          <button
+            onClick={() => setShowSocialRecorder(true)}
+            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium"
+          >
+            📱 Grabar Video para Redes Sociales
+          </button>
+
           {/* Resultado de BPM */}
           {bpmResult && (
             <div className="mt-4 bg-blue-600/20 border border-blue-500/30 rounded-lg p-4">
@@ -550,6 +562,15 @@ export default function MultitrackPlayer({ songTitle, artist, stems = [], onClos
           )}
         </div>
       </div>
+
+      {/* Social Recorder Modal */}
+      {showSocialRecorder && (
+        <SocialRecorder
+          songTitle={songTitle}
+          audioUrl={stems?.[0]?.url}
+          onClose={() => setShowSocialRecorder(false)}
+        />
+      )}
     </div>
   );
 }
