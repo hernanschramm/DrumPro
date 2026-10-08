@@ -175,4 +175,5 @@ export interface AcademyState {
   rudimentos: Rudimento[];
   grooves: Groove[];
   notificaciones: Notificacion[];
+  activeVideoCall: Clase | null;
 }

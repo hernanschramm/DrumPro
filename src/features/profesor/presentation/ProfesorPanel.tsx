@@ -286,6 +286,10 @@ export default function ProfesorPanel() {
                 profesor={currentUser}
                 alumno={state.users.find(u => u.id === selectedClass.alumnoId)}
                 onClose={() => setSelectedClass(null)}
+                onStartVideoCall={() => {
+                  dispatch({ type: 'START_VIDEO_CALL', payload: selectedClass });
+                  setSelectedClass(null);
+                }}
                 onEdit={() => {
                   setEditingClass(selectedClass);
                   setShowClassForm(true);

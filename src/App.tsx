@@ -11,6 +11,7 @@ import ForgotPasswordScreen from './features/auth/presentation/ForgotPasswordScr
 import AdminPanel from './features/admin/presentation/AdminPanel';
 import ProfesorPanel from './features/profesor/presentation/ProfesorPanel';
 import AlumnoPanel from './features/alumno/presentation/AlumnoPanel';
+import VideoCallScreen from './features/clases/presentation/VideoCallScreen';
 import { authRepository } from './features/auth/data/auth_repository';
 
 // Pantallas de autenticación
@@ -57,6 +58,25 @@ function AppContent() {
   // Si no hay usuario logueado, mostrar flujo de autenticación
   if (!state.currentUser) {
     return <AuthFlow />;
+  }
+
+  // Si hay una videollamada activa, mostrar pantalla de videollamada
+  if (state.activeVideoCall) {
+    const otherUserId = state.activeVideoCall.profesorId === state.currentUser.id
+      ? state.activeVideoCall.alumnoId
+      : state.activeVideoCall.profesorId;
+    const otherUser = state.users.find(u => u.id === otherUserId);
+
+    if (otherUser) {
+      return (
+        <VideoCallScreen
+          clase={state.activeVideoCall}
+          currentUser={state.currentUser}
+          otherUser={otherUser}
+          onEndCall={() => dispatch({ type: 'END_VIDEO_CALL' })}
+        />
+      );
+    }
   }
 
   // Renderizar panel según rol

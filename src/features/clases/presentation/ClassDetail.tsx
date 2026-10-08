@@ -12,6 +12,7 @@ interface ClassDetailProps {
   alumno?: UserProfile;
   onClose: () => void;
   onEdit?: () => void;
+  onStartVideoCall?: () => void;
   canEdit?: boolean;
 }
 
@@ -21,6 +22,7 @@ export default function ClassDetail({
   alumno, 
   onClose, 
   onEdit,
+  onStartVideoCall,
   canEdit = false 
 }: ClassDetailProps) {
   const inicio = new Date(clase.fechaInicio);
@@ -159,14 +161,24 @@ export default function ClassDetail({
                   </div>
                 </div>
                 {(isUpcoming || isLive) && clase.estado !== 'cancelada' && (
-                  <a
-                    href={clase.videollamadaUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm whitespace-nowrap transition-colors"
-                  >
-                    {isLive ? '🔴 Unirse ahora' : '📹 Abrir sala'}
-                  </a>
+                  <div className="flex gap-2">
+                    {onStartVideoCall && (
+                      <button
+                        onClick={onStartVideoCall}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm whitespace-nowrap transition-colors"
+                      >
+                        🎥 Iniciar videollamada
+                      </button>
+                    )}
+                    <a
+                      href={clase.videollamadaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm whitespace-nowrap transition-colors"
+                    >
+                      {isLive ? '🔴 Unirse ahora' : '📹 Abrir sala'}
+                    </a>
+                  </div>
                 )}
               </div>
               {isLive && (

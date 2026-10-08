@@ -216,6 +216,10 @@ export default function AlumnoPanel() {
                 clase={selectedClass}
                 profesor={profesor}
                 onClose={() => setSelectedClass(null)}
+                onStartVideoCall={() => {
+                  dispatch({ type: 'START_VIDEO_CALL', payload: selectedClass });
+                  setSelectedClass(null);
+                }}
               />
             )}
           </div>

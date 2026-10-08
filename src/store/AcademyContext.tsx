@@ -247,6 +247,7 @@ const initialState: AcademyState = {
   rudimentos: seedRudimentos,
   grooves: seedGrooves,
   notificaciones: seedNotificaciones,
+  activeVideoCall: null,
 };
 
 // Acciones
@@ -263,7 +264,9 @@ type AcademyAction =
   | { type: 'UPDATE_ASIGNACION'; payload: TareaAsignacion }
   | { type: 'ADD_ENTREGA'; payload: Entrega }
   | { type: 'ADD_EVALUACION'; payload: Evaluacion }
-  | { type: 'MARK_NOTIFICATION_READ'; payload: string };
+  | { type: 'MARK_NOTIFICATION_READ'; payload: string }
+  | { type: 'START_VIDEO_CALL'; payload: Clase }
+  | { type: 'END_VIDEO_CALL' };
 
 // Reducer
 function academyReducer(state: AcademyState, action: AcademyAction): AcademyState {
@@ -294,6 +297,10 @@ function academyReducer(state: AcademyState, action: AcademyAction): AcademyStat
       return { ...state, evaluaciones: [...state.evaluaciones, action.payload] };
     case 'MARK_NOTIFICATION_READ':
       return { ...state, notificaciones: state.notificaciones.map(n => n.id === action.payload ? { ...n, leida: true } : n) };
+    case 'START_VIDEO_CALL':
+      return { ...state, activeVideoCall: action.payload };
+    case 'END_VIDEO_CALL':
+      return { ...state, activeVideoCall: null };
     default:
       return state;
   }
