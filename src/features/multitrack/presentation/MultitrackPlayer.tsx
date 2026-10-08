@@ -7,6 +7,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MultitrackEngine, StemTrack } from '../data/MultitrackEngine';
 import { BpmDetector, BpmDetectionResult } from '../data/BpmDetector';
+import { NoteDetector, DetectedNote } from '../data/NoteDetector';
+import PianoRoll from './PianoRoll';
 
 interface MultitrackPlayerProps {
   songTitle: string;
@@ -32,14 +34,22 @@ export default function MultitrackPlayer({ songTitle, artist, stems = [], onClos
   const [loopStart, setLoopStart] = useState(0);
   const [loopEnd, setLoopEnd] = useState(0);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  
+  // Estados para detección de notas
+  const [detectedNotes, setDetectedNotes] = useState<DetectedNote[]>([]);
+  const [selectedInstrument, setSelectedInstrument] = useState<'guitar' | 'bass' | 'keys'>('guitar');
+  const [isDetectingNotes, setIsDetectingNotes] = useState(false);
+  const [showPianoRoll, setShowPianoRoll] = useState(false);
 
   const engineRef = useRef<MultitrackEngine | null>(null);
-  const detectorRef = useRef<BpmDetector | null>(null);
+  const bpmDetectorRef = useRef<BpmDetector | null>(null);
+  const noteDetectorRef = useRef<NoteDetector | null>(null);
 
   // Inicializar motores
   useEffect(() => {
     engineRef.current = new MultitrackEngine();
-    detectorRef.current = new BpmDetector();
+    bpmDetectorRef.current = new BpmDetector();
+    noteDetectorRef.current = new NoteDetector();
 
     // Registrar callback de actualización de tiempo
     engineRef.current.onTimeUpdate((time) => {
@@ -158,16 +168,32 @@ export default function MultitrackPlayer({ songTitle, artist, stems = [], onClos
 
   // Detectar BPM
   const detectBpm = async () => {
-    if (!detectorRef.current) return;
+    if (!bpmDetectorRef.current) return;
 
     setIsDetectingBpm(true);
     try {
-      const result = await detectorRef.current.detectBpm('demo://song');
+      const result = await bpmDetectorRef.current.detectBpm('demo://song');
       setBpmResult(result);
     } catch (error) {
       console.error('Error detectando BPM:', error);
     } finally {
       setIsDetectingBpm(false);
+    }
+  };
+
+  // Detectar notas
+  const detectNotes = async () => {
+    if (!noteDetectorRef.current) return;
+
+    setIsDetectingNotes(true);
+    try {
+      const result = await noteDetectorRef.current.detectNotes('demo://song', selectedInstrument);
+      setDetectedNotes(result.notes);
+      setShowPianoRoll(true);
+    } catch (error) {
+      console.error('Error detectando notas:', error);
+    } finally {
+      setIsDetectingNotes(false);
     }
   };
 
@@ -441,6 +467,84 @@ export default function MultitrackPlayer({ songTitle, artist, stems = [], onClos
                   <li>• Configura Loop A-B para practicar secciones específicas</li>
                   <li>• Detecta el BPM automáticamente para sincronizar con metrónomo</li>
                 </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Detección de Notas y Piano Roll */}
+        <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6">
+          <h3 className="text-white font-bold mb-4">🎼 Detección de Notas</h3>
+          
+          {/* Selector de instrumento */}
+          <div className="mb-4">
+            <label className="block text-gray-300 mb-2 text-sm">Instrumento a analizar:</label>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setSelectedInstrument('guitar')}
+                className={`flex-1 py-2 rounded-lg font-medium transition-all ${
+                  selectedInstrument === 'guitar'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                🎸 Guitarra
+              </button>
+              <button
+                onClick={() => setSelectedInstrument('bass')}
+                className={`flex-1 py-2 rounded-lg font-medium transition-all ${
+                  selectedInstrument === 'bass'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                🎸 Bajo
+              </button>
+              <button
+                onClick={() => setSelectedInstrument('keys')}
+                className={`flex-1 py-2 rounded-lg font-medium transition-all ${
+                  selectedInstrument === 'keys'
+                    ? 'bg-yellow-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                🎹 Teclado
+              </button>
+            </div>
+          </div>
+
+          {/* Botón de detección */}
+          <button
+            onClick={detectNotes}
+            disabled={isDetectingNotes}
+            className="w-full py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-lg font-medium mb-4"
+          >
+            {isDetectingNotes ? '⏳ Detectando notas...' : '🎼 Detectar Notas'}
+          </button>
+
+          {/* Piano Roll */}
+          {showPianoRoll && detectedNotes.length > 0 && (
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-white font-medium">
+                  Piano Roll - {selectedInstrument === 'guitar' ? 'Guitarra' : selectedInstrument === 'bass' ? 'Bajo' : 'Teclado'}
+                </h4>
+                <button
+                  onClick={() => setShowPianoRoll(false)}
+                  className="text-gray-400 hover:text-white text-sm"
+                >
+                  ✕ Cerrar
+                </button>
+              </div>
+              <PianoRoll
+                notes={detectedNotes}
+                currentTime={currentTime}
+                duration={duration}
+              />
+              <div className="mt-2 text-xs text-gray-400">
+                {detectedNotes.length} notas detectadas • 
+                Duración: {duration.toFixed(1)}s • 
+                Rango: {detectedNotes.length > 0 ? `${Math.min(...detectedNotes.map(n => n.pitchMidi))} - ${Math.max(...detectedNotes.map(n => n.pitchMidi))} MIDI` : 'N/A'}
               </div>
             </div>
           )}
