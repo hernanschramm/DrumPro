@@ -5,19 +5,22 @@
 
 import React, { useState } from 'react';
 import { useAcademy } from '../../../store/AcademyContext';
-import { Tarea, TareaAsignacion, Clase } from '../../../types/academy';
+import { Tarea, TareaAsignacion, Clase, UserProfile } from '../../../types/academy';
 import CalendarView from '../../clases/presentation/CalendarView';
 import ClassForm from '../../clases/presentation/ClassForm';
 import ClassDetail from '../../clases/presentation/ClassDetail';
 import GradePanel, { CriterioCalificacion } from '../../tareas/presentation/GradePanel';
+import EvaluationForm from '../../evaluaciones/presentation/EvaluationForm';
 
 export default function ProfesorPanel() {
   const { state, dispatch } = useAcademy();
-  const [activeTab, setActiveTab] = useState<'alumnos' | 'clases' | 'tareas'>('clases');
+  const [activeTab, setActiveTab] = useState<'alumnos' | 'clases' | 'tareas' | 'evaluaciones'>('clases');
   const [showClassForm, setShowClassForm] = useState(false);
   const [editingClass, setEditingClass] = useState<Clase | null>(null);
   const [selectedClass, setSelectedClass] = useState<Clase | null>(null);
   const [gradingAsignacion, setGradingAsignacion] = useState<TareaAsignacion | null>(null);
+  const [showEvaluationForm, setShowEvaluationForm] = useState(false);
+  const [selectedAlumno, setSelectedAlumno] = useState<UserProfile | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskForm, setTaskForm] = useState({
     titulo: '',
@@ -116,6 +119,14 @@ export default function ProfesorPanel() {
           }`}
         >
           Tareas ({misTareas.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('evaluaciones')}
+          className={`flex-1 py-3 font-medium transition-colors ${
+            activeTab === 'evaluaciones' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'
+          }`}
+        >
+          Evaluaciones
         </button>
       </div>
 
@@ -448,6 +459,120 @@ export default function ProfesorPanel() {
                         setGradingAsignacion(null);
                       }}
                       onCancel={() => setGradingAsignacion(null)}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'evaluaciones' && (
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-800">Evaluaciones</h2>
+              <button
+                onClick={() => {
+                  setSelectedAlumno(misAlumnos[0] || null);
+                  setShowEvaluationForm(true);
+                }}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium"
+                disabled={misAlumnos.length === 0}
+              >
+                + Nueva Evaluación
+              </button>
+            </div>
+
+            {/* Selector de alumno */}
+            {misAlumnos.length > 0 && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Seleccionar alumno:
+                </label>
+                <select
+                  value={selectedAlumno?.id || ''}
+                  onChange={(e) => {
+                    const alumno = misAlumnos.find(a => a.id === e.target.value);
+                    setSelectedAlumno(alumno || null);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Selecciona un alumno</option>
+                  {misAlumnos.map(alumno => (
+                    <option key={alumno.id} value={alumno.id}>{alumno.fullName}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Lista de evaluaciones del alumno seleccionado */}
+            {selectedAlumno && (
+              <div>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">
+                  Evaluaciones de {selectedAlumno.fullName}
+                </h3>
+                {state.evaluaciones.filter(e => e.alumnoId === selectedAlumno.id).length === 0 ? (
+                  <div className="text-center py-12 text-gray-500 bg-white rounded-lg">
+                    <div className="text-4xl mb-2">📊</div>
+                    <p>No hay evaluaciones para este alumno</p>
+                    <p className="text-sm mt-2">Crea una nueva evaluación para comenzar</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {state.evaluaciones
+                      .filter(e => e.alumnoId === selectedAlumno.id)
+                      .sort((a, b) => new Date(b.fechaEvaluacion).getTime() - new Date(a.fechaEvaluacion).getTime())
+                      .map(evaluacion => {
+                        const porcentaje = Math.round(((evaluacion.puntajeObtenido || 0) / evaluacion.puntajeTotal) * 100);
+                        return (
+                          <div key={evaluacion.id} className="bg-white rounded-lg shadow-sm p-4">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h4 className="font-bold text-gray-800">{evaluacion.titulo}</h4>
+                                <p className="text-sm text-gray-500">
+                                  {new Date(evaluacion.fechaEvaluacion).toLocaleDateString('es-ES')}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-2xl font-bold text-blue-600">{porcentaje}%</div>
+                                <div className="text-sm text-gray-500">
+                                  {evaluacion.puntajeObtenido}/{evaluacion.puntajeTotal}
+                                </div>
+                              </div>
+                            </div>
+                            {evaluacion.observaciones && (
+                              <p className="text-sm text-gray-600 mt-2">{evaluacion.observaciones}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Formulario de evaluación */}
+            {showEvaluationForm && selectedAlumno && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                  <div className="p-6">
+                    <EvaluationForm
+                      alumno={selectedAlumno}
+                      onSave={(evaluacionData) => {
+                        const nuevaEvaluacion = {
+                          ...evaluacionData,
+                          id: `eval-${Date.now()}`,
+                          profesorId: currentUser.id,
+                          createdAt: new Date().toISOString(),
+                        };
+                        dispatch({ type: 'ADD_EVALUACION', payload: nuevaEvaluacion });
+                        setShowEvaluationForm(false);
+                        setSelectedAlumno(null);
+                      }}
+                      onCancel={() => {
+                        setShowEvaluationForm(false);
+                        setSelectedAlumno(null);
+                      }}
                     />
                   </div>
                 </div>

@@ -4,7 +4,7 @@
 // ============================================================
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { AcademyState, UserProfile, Clase, Tarea, TareaAsignacion, Entrega, Rudimento, Groove, Notificacion } from '../types/academy';
+import { AcademyState, UserProfile, Clase, Tarea, TareaAsignacion, Entrega, Evaluacion, Rudimento, Groove, Notificacion } from '../types/academy';
 
 // Datos de ejemplo (seed)
 const seedUsers: UserProfile[] = [
@@ -186,6 +186,47 @@ const seedGrooves: Groove[] = [
   },
 ];
 
+const seedEvaluaciones: Evaluacion[] = [
+  {
+    id: 'eval-1',
+    profesorId: 'prof-1',
+    alumnoId: 'alumno-1',
+    titulo: 'Evaluación Inicial',
+    descripcion: 'Evaluación de nivel inicial',
+    fechaEvaluacion: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // Hace 30 días
+    puntajeTotal: 100,
+    puntajeObtenido: 65,
+    observaciones: 'Buen comienzo, necesita mejorar el tiempo y la coordinación.',
+    criterios: [
+      { id: '1', nombre: 'Tiempo', puntajeMaximo: 20, puntajeObtenido: 12, comentario: 'Mejorar consistencia' },
+      { id: '2', nombre: 'Limpieza', puntajeMaximo: 20, puntajeObtenido: 15, comentario: 'Buen control' },
+      { id: '3', nombre: 'Dinámica', puntajeMaximo: 20, puntajeObtenido: 13, comentario: 'Poca variación' },
+      { id: '4', nombre: 'Coordinación', puntajeMaximo: 20, puntajeObtenido: 14, comentario: 'En progreso' },
+      { id: '5', nombre: 'Lectura', puntajeMaximo: 20, puntajeObtenido: 11, comentario: 'Practicar más' },
+    ],
+    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'eval-2',
+    profesorId: 'prof-1',
+    alumnoId: 'alumno-1',
+    titulo: 'Evaluación Mensual - Noviembre',
+    descripcion: 'Seguimiento mensual',
+    fechaEvaluacion: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), // Hace 15 días
+    puntajeTotal: 100,
+    puntajeObtenido: 78,
+    observaciones: 'Notable mejora en tiempo y coordinación. Continuar con dinámica.',
+    criterios: [
+      { id: '1', nombre: 'Tiempo', puntajeMaximo: 20, puntajeObtenido: 16, comentario: 'Gran mejora' },
+      { id: '2', nombre: 'Limpieza', puntajeMaximo: 20, puntajeObtenido: 17, comentario: 'Excelente' },
+      { id: '3', nombre: 'Dinámica', puntajeMaximo: 20, puntajeObtenido: 15, comentario: 'Mejorando' },
+      { id: '4', nombre: 'Coordinación', puntajeMaximo: 20, puntajeObtenido: 16, comentario: 'Muy bien' },
+      { id: '5', nombre: 'Lectura', puntajeMaximo: 20, puntajeObtenido: 14, comentario: 'Buen progreso' },
+    ],
+    createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
 const seedNotificaciones: Notificacion[] = [
   {
     id: 'notif-1', usuarioId: 'alumno-1', titulo: 'Nueva tarea', mensaje: 'Tu profesor Carlos te asignó una nueva tarea',
@@ -201,7 +242,7 @@ const initialState: AcademyState = {
   tareas: seedTareas,
   asignaciones: seedAsignaciones,
   entregas: [],
-  evaluaciones: [],
+  evaluaciones: seedEvaluaciones,
   sesionesPractica: [],
   rudimentos: seedRudimentos,
   grooves: seedGrooves,
@@ -221,6 +262,7 @@ type AcademyAction =
   | { type: 'ADD_ASIGNACION'; payload: TareaAsignacion }
   | { type: 'UPDATE_ASIGNACION'; payload: TareaAsignacion }
   | { type: 'ADD_ENTREGA'; payload: Entrega }
+  | { type: 'ADD_EVALUACION'; payload: Evaluacion }
   | { type: 'MARK_NOTIFICATION_READ'; payload: string };
 
 // Reducer
@@ -248,6 +290,8 @@ function academyReducer(state: AcademyState, action: AcademyAction): AcademyStat
       return { ...state, asignaciones: state.asignaciones.map(a => a.id === action.payload.id ? action.payload : a) };
     case 'ADD_ENTREGA':
       return { ...state, entregas: [...state.entregas, action.payload] };
+    case 'ADD_EVALUACION':
+      return { ...state, evaluaciones: [...state.evaluaciones, action.payload] };
     case 'MARK_NOTIFICATION_READ':
       return { ...state, notificaciones: state.notificaciones.map(n => n.id === action.payload ? { ...n, leida: true } : n) };
     default:

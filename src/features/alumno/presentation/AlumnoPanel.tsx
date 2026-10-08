@@ -9,6 +9,7 @@ import { Clase, Tarea, TareaAsignacion } from '../../../types/academy';
 import CalendarView from '../../clases/presentation/CalendarView';
 import ClassDetail from '../../clases/presentation/ClassDetail';
 import TaskDetailAlumno from '../../tareas/presentation/TaskDetailAlumno';
+import ProgressDashboard from '../../progreso/presentation/ProgressDashboard';
 
 export default function AlumnoPanel() {
   const { state, dispatch } = useAcademy();
@@ -275,56 +276,12 @@ export default function AlumnoPanel() {
 
         {activeTab === 'progreso' && (
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Mi Progreso</h2>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white rounded-lg shadow-sm p-4 text-center">
-                <div className="text-3xl font-bold text-green-600">
-                  {misAsignaciones.filter(a => a.estado === 'aprobada').length}
-                </div>
-                <div className="text-sm text-gray-600 mt-1">Tareas completadas</div>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-4 text-center">
-                <div className="text-3xl font-bold text-blue-600">0</div>
-                <div className="text-sm text-gray-600 mt-1">Minutos práctica</div>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-4 text-center">
-                <div className="text-3xl font-bold text-orange-600">0</div>
-                <div className="text-sm text-gray-600 mt-1">Rudimentos</div>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-4 text-center">
-                <div className="text-3xl font-bold text-purple-600">0</div>
-                <div className="text-sm text-gray-600 mt-1">Racha días</div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Promedio General</h3>
-              <div className="flex items-center justify-center">
-                <div className="text-6xl font-bold text-green-600">
-                  {(() => {
-                    const aprobadas = misAsignaciones.filter(a => a.estado === 'aprobada' && a.puntaje);
-                    if (aprobadas.length === 0) return '-';
-                    const promedio = aprobadas.reduce((sum, a) => sum + (a.puntaje || 0), 0) / aprobadas.length;
-                    return Math.round(promedio);
-                  })()}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Mi Profesor</h3>
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  {profesor?.fullName.charAt(0)}
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-gray-800">{profesor?.fullName}</div>
-                  <div className="text-sm text-gray-600">{profesor?.email}</div>
-                  {profesor?.bio && <p className="text-sm text-gray-600 mt-1">{profesor.bio}</p>}
-                </div>
-              </div>
-            </div>
+            <ProgressDashboard
+              alumno={currentUser}
+              evaluaciones={state.evaluaciones.filter(e => e.alumnoId === currentUser.id)}
+              asignaciones={misAsignaciones}
+              tareas={state.tareas}
+            />
           </div>
         )}
       </div>
