@@ -73,12 +73,51 @@ const seedClases: Clase[] = [
     alumnoId: 'alumno-1',
     titulo: 'Técnica de redobles',
     descripcion: 'Trabajaremos paradiddles y sus variaciones',
-    fechaInicio: '2024-12-20T15:00:00Z',
-    fechaFin: '2024-12-20T16:00:00Z',
+    fechaInicio: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // En 2 días
+    fechaFin: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
     estado: 'programada',
-    videollamadaUrl: 'https://meet.jit.si/DrumPro-Juan-201224',
-    materiales: [],
+    videollamadaUrl: 'https://meet.jit.si/DrumPro-Juan-Paradiddles',
+    materiales: ['https://example.com/paradiddles.pdf'],
     createdAt: '2024-12-15T00:00:00Z',
+  },
+  {
+    id: 'clase-2',
+    profesorId: 'prof-1',
+    alumnoId: 'alumno-2',
+    titulo: 'Introducción al ritmo básico',
+    descripcion: 'Primeros grooves de rock y coordinación básica',
+    fechaInicio: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // En 3 días
+    fechaFin: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
+    estado: 'programada',
+    videollamadaUrl: 'https://meet.jit.si/DrumPro-Ana-Basico',
+    materiales: [],
+    createdAt: '2024-12-16T00:00:00Z',
+  },
+  {
+    id: 'clase-3',
+    profesorId: 'prof-2',
+    alumnoId: 'alumno-3',
+    titulo: 'Grooves latinos',
+    descripcion: 'Ritmos de salsa y bossa nova',
+    fechaInicio: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // En 5 días
+    fechaFin: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 90 * 60 * 1000).toISOString(),
+    estado: 'programada',
+    videollamadaUrl: 'https://meet.jit.si/DrumPro-Pedro-Latino',
+    materiales: ['https://example.com/salsa-patterns.pdf', 'https://example.com/bossa.mp3'],
+    createdAt: '2024-12-17T00:00:00Z',
+  },
+  {
+    id: 'clase-4',
+    profesorId: 'prof-1',
+    alumnoId: 'alumno-1',
+    titulo: 'Repaso de técnica',
+    descripcion: 'Clase de seguimiento',
+    fechaInicio: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // Hace 2 días
+    fechaFin: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
+    estado: 'finalizada',
+    videollamadaUrl: 'https://meet.jit.si/DrumPro-Juan-Repaso',
+    materiales: [],
+    createdAt: '2024-12-10T00:00:00Z',
   },
 ];
 
@@ -151,6 +190,7 @@ type AcademyAction =
   | { type: 'UPDATE_USER'; payload: UserProfile }
   | { type: 'DELETE_USER'; payload: string }
   | { type: 'ADD_CLASE'; payload: Clase }
+  | { type: 'UPDATE_CLASE'; payload: Clase }
   | { type: 'ADD_TAREA'; payload: Tarea }
   | { type: 'ADD_ASIGNACION'; payload: TareaAsignacion }
   | { type: 'UPDATE_ASIGNACION'; payload: TareaAsignacion }
@@ -171,6 +211,8 @@ function academyReducer(state: AcademyState, action: AcademyAction): AcademyStat
       return { ...state, users: state.users.filter(u => u.id !== action.payload) };
     case 'ADD_CLASE':
       return { ...state, clases: [...state.clases, action.payload] };
+    case 'UPDATE_CLASE':
+      return { ...state, clases: state.clases.map(c => c.id === action.payload.id ? action.payload : c) };
     case 'ADD_TAREA':
       return { ...state, tareas: [...state.tareas, action.payload] };
     case 'ADD_ASIGNACION':

@@ -5,11 +5,17 @@
 
 import React, { useState } from 'react';
 import { useAcademy } from '../../../store/AcademyContext';
-import { Tarea, TareaAsignacion } from '../../../types/academy';
+import { Tarea, TareaAsignacion, Clase } from '../../../types/academy';
+import CalendarView from '../../clases/presentation/CalendarView';
+import ClassForm from '../../clases/presentation/ClassForm';
+import ClassDetail from '../../clases/presentation/ClassDetail';
 
 export default function ProfesorPanel() {
   const { state, dispatch } = useAcademy();
-  const [activeTab, setActiveTab] = useState<'alumnos' | 'clases' | 'tareas'>('alumnos');
+  const [activeTab, setActiveTab] = useState<'alumnos' | 'clases' | 'tareas'>('clases');
+  const [showClassForm, setShowClassForm] = useState(false);
+  const [editingClass, setEditingClass] = useState<Clase | null>(null);
+  const [selectedClass, setSelectedClass] = useState<Clase | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskForm, setTaskForm] = useState({
     titulo: '',
@@ -163,38 +169,117 @@ export default function ProfesorPanel() {
 
         {activeTab === 'clases' && (
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Mis Clases</h2>
-            {misClases.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <div className="text-4xl mb-2">📅</div>
-                <p>No tienes clases programadas</p>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-800">Mis Clases</h2>
+              <button
+                onClick={() => {
+                  setEditingClass(null);
+                  setShowClassForm(true);
+                }}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium"
+              >
+                + Nueva Clase
+              </button>
+            </div>
+
+            {/* Formulario de clase */}
+            {showClassForm && (
+              <div className="mb-6">
+                <ClassForm
+                  profesores={[currentUser]}
+                  alumnos={misAlumnos}
+                  clase={editingClass}
+                  currentUser={currentUser}
+                  onSave={(claseData) => {
+                    if (editingClass) {
+                      // Actualizar clase existente
+                      dispatch({
+                        type: 'UPDATE_CLASE',
+                        payload: { ...claseData, id: editingClass.id, createdAt: editingClass.createdAt } as Clase,
+                      });
+                    } else {
+                      // Crear nueva clase
+                      const newClase: Clase = {
+                        ...claseData,
+                        id: `clase-${Date.now()}`,
+                        createdAt: new Date().toISOString(),
+                      };
+                      dispatch({ type: 'ADD_CLASE', payload: newClase });
+                    }
+                    setShowClassForm(false);
+                    setEditingClass(null);
+                  }}
+                  onCancel={() => {
+                    setShowClassForm(false);
+                    setEditingClass(null);
+                  }}
+                />
               </div>
-            ) : (
-              <div className="space-y-4">
-                {misClases.map(clase => {
-                  const alumno = state.users.find(u => u.id === clase.alumnoId);
-                  return (
-                    <div key={clase.id} className="bg-white rounded-lg shadow-sm p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-lg font-bold text-gray-800">{clase.titulo}</h3>
-                          <p className="text-sm text-gray-600">Alumno: {alumno?.fullName}</p>
+            )}
+
+            {/* Calendario */}
+            <div className="mb-6">
+              <CalendarView
+                clases={misClases}
+                onClassClick={(clase) => setSelectedClass(clase)}
+              />
+            </div>
+
+            {/* Lista de próximas clases */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-800 mb-4">Próximas Clases</h3>
+              {misClases.filter(c => new Date(c.fechaInicio) > new Date() && c.estado === 'programada').length === 0 ? (
+                <div className="text-center py-8 text-gray-500 bg-white rounded-lg">
+                  <div className="text-4xl mb-2">📅</div>
+                  <p>No tienes clases próximas</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {misClases
+                    .filter(c => new Date(c.fechaInicio) > new Date() && c.estado === 'programada')
+                    .sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime())
+                    .map(clase => {
+                      const alumno = state.users.find(u => u.id === clase.alumnoId);
+                      return (
+                        <div
+                          key={clase.id}
+                          onClick={() => setSelectedClass(clase)}
+                          className="bg-white rounded-lg shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h4 className="font-bold text-gray-800">{clase.titulo}</h4>
+                              <p className="text-sm text-gray-600">Alumno: {alumno?.fullName}</p>
+                            </div>
+                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                              Programada
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                            <span>📅 {new Date(clase.fechaInicio).toLocaleDateString('es-ES')}</span>
+                            <span>🕐 {new Date(clase.fechaInicio).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          clase.estado === 'programada' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                        }`}>
-                          {clase.estado}
-                        </span>
-                      </div>
-                      {clase.descripcion && <p className="text-sm text-gray-600 mb-4">{clase.descripcion}</p>}
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span>📅 {new Date(clase.fechaInicio).toLocaleDateString('es-ES')}</span>
-                        <span>🕐 {new Date(clase.fechaInicio).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
+
+            {/* Detalle de clase */}
+            {selectedClass && (
+              <ClassDetail
+                clase={selectedClass}
+                profesor={currentUser}
+                alumno={state.users.find(u => u.id === selectedClass.alumnoId)}
+                onClose={() => setSelectedClass(null)}
+                onEdit={() => {
+                  setEditingClass(selectedClass);
+                  setShowClassForm(true);
+                  setSelectedClass(null);
+                }}
+                canEdit={true}
+              />
             )}
           </div>
         )}
