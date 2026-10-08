@@ -146,17 +146,6 @@ export interface Groove {
   videoUrl?: string;
 }
 
-/** Progreso de rudimento del alumno */
-export interface ProgresoRudimento {
-  id: string;
-  alumnoId: string;
-  rudimentoId: string;
-  dominado: boolean;
-  validadoPor?: string;
-  bpmActual?: number;
-  notas?: string;
-}
-
 /** Notificación */
 export interface Notificacion {
   id: string;
@@ -181,6 +170,5 @@ export interface AcademyState {
   sesionesPractica: SesionPractica[];
   rudimentos: Rudimento[];
   grooves: Groove[];
-  progresoRudimentos: ProgresoRudimento[];
   notificaciones: Notificacion[];
 }
