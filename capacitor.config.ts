@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.drumpro.app',
-  appName: 'DrumPro',
+  appId: 'com.drumpro.academy',
+  appName: 'DrumPro Academy',
   webDir: 'dist',
   bundledWebRuntime: false,
   server: {
@@ -11,7 +11,8 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: false,
     captureInput: true,
-    webContentsDebuggingEnabled: false,
+    webContentsDebuggingEnabled: true, // Para debugging
+    backgroundColor: '#111827',
   },
   plugins: {
     SplashScreen: {
@@ -25,10 +26,6 @@ const config: CapacitorConfig = {
     StatusBar: {
       style: 'DARK',
       backgroundColor: '#111827',
-    },
-    App: {
-      // Manejo del botón atrás de Android
-      exitUrl: '/exit',
     },
   },
 };
