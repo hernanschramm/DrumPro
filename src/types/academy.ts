@@ -136,10 +136,14 @@ export interface Groove {
   dificultad: 'basico' | 'intermedio' | 'avanzado';
   compas: string;
   patron: {
-    kick: number[];
-    snare: number[];
-    hihat: number[];
+    kick?: number[];
+    snare?: number[];
+    hihat?: number[];
+    hihatOpen?: number[];
     ride?: number[];
+    crossStick?: number[];
+    tom?: number[];
+    cymbal?: number[];
   };
   bpmSugerido: number;
   descripcion?: string;

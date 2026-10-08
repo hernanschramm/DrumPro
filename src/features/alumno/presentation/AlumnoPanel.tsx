@@ -10,6 +10,7 @@ import CalendarView from '../../clases/presentation/CalendarView';
 import ClassDetail from '../../clases/presentation/ClassDetail';
 import TaskDetailAlumno from '../../tareas/presentation/TaskDetailAlumno';
 import ProgressDashboard from '../../progreso/presentation/ProgressDashboard';
+import LibraryScreen from '../../biblioteca/presentation/LibraryScreen';
 
 export default function AlumnoPanel() {
   const { state, dispatch } = useAcademy();
@@ -221,56 +222,8 @@ export default function AlumnoPanel() {
         )}
 
         {activeTab === 'biblioteca' && (
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Biblioteca de Estudio</h2>
-            
-            <div className="mb-8">
-              <h3 className="text-lg font-bold text-gray-700 mb-4">Rudimentos ({state.rudimentos.length})</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {state.rudimentos.map(rud => (
-                  <div key={rud.id} className="bg-white rounded-lg shadow-sm p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-bold text-gray-800">{rud.nombre}</h4>
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                        rud.dificultad === 'basico' ? 'bg-green-100 text-green-700' :
-                        rud.dificultad === 'intermedio' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {rud.dificultad}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">{rud.descripcion}</p>
-                    <div className="text-xs text-gray-500">
-                      Categoría: {rud.categoria} • BPM: {rud.bpmObjetivo}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-gray-700 mb-4">Grooves ({state.grooves.length})</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {state.grooves.map(groove => (
-                  <div key={groove.id} className="bg-white rounded-lg shadow-sm p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-bold text-gray-800">{groove.nombre}</h4>
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                        groove.dificultad === 'basico' ? 'bg-green-100 text-green-700' :
-                        groove.dificultad === 'intermedio' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {groove.dificultad}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">{groove.descripcion}</p>
-                    <div className="text-xs text-gray-500">
-                      Estilo: {groove.estilo} • Compás: {groove.compas} • BPM: {groove.bpmSugerido}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="h-full overflow-y-auto">
+            <LibraryScreen />
           </div>
         )}
 
