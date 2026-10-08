@@ -11,10 +11,11 @@ import ClassDetail from '../../clases/presentation/ClassDetail';
 import TaskDetailAlumno from '../../tareas/presentation/TaskDetailAlumno';
 import ProgressDashboard from '../../progreso/presentation/ProgressDashboard';
 import LibraryScreen from '../../biblioteca/presentation/LibraryScreen';
+import MultitrackPlayer from '../../multitrack/presentation/MultitrackPlayer';
 
 export default function AlumnoPanel() {
   const { state, dispatch } = useAcademy();
-  const [activeTab, setActiveTab] = useState<'tareas' | 'clases' | 'biblioteca' | 'progreso'>('tareas');
+  const [activeTab, setActiveTab] = useState<'tareas' | 'clases' | 'biblioteca' | 'progreso' | 'multitrack'>('tareas');
   const [selectedClass, setSelectedClass] = useState<Clase | null>(null);
   const [selectedTask, setSelectedTask] = useState<{ tarea: Tarea; asignacion: TareaAsignacion } | null>(null);
 
@@ -45,6 +46,7 @@ export default function AlumnoPanel() {
           { id: 'tareas', label: 'Tareas', count: misAsignaciones.filter(a => a.estado === 'pendiente').length },
           { id: 'clases', label: 'Clases', count: misClases.length },
           { id: 'biblioteca', label: 'Biblioteca', count: state.rudimentos.length },
+          { id: 'multitrack', label: 'Multitrack', count: 0 },
           { id: 'progreso', label: 'Progreso', count: 0 },
         ].map(tab => (
           <button
@@ -228,6 +230,15 @@ export default function AlumnoPanel() {
         {activeTab === 'biblioteca' && (
           <div className="h-full overflow-y-auto">
             <LibraryScreen />
+          </div>
+        )}
+
+        {activeTab === 'multitrack' && (
+          <div className="h-full overflow-y-auto">
+            <MultitrackPlayer
+              songTitle="Canción de Práctica"
+              artist="Artista de Ejemplo"
+            />
           </div>
         )}
 
