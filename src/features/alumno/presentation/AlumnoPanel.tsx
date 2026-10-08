@@ -5,14 +5,16 @@
 
 import React, { useState } from 'react';
 import { useAcademy } from '../../../store/AcademyContext';
-import { Clase } from '../../../types/academy';
+import { Clase, Tarea, TareaAsignacion } from '../../../types/academy';
 import CalendarView from '../../clases/presentation/CalendarView';
 import ClassDetail from '../../clases/presentation/ClassDetail';
+import TaskDetailAlumno from '../../tareas/presentation/TaskDetailAlumno';
 
 export default function AlumnoPanel() {
   const { state, dispatch } = useAcademy();
   const [activeTab, setActiveTab] = useState<'tareas' | 'clases' | 'biblioteca' | 'progreso'>('tareas');
   const [selectedClass, setSelectedClass] = useState<Clase | null>(null);
+  const [selectedTask, setSelectedTask] = useState<{ tarea: Tarea; asignacion: TareaAsignacion } | null>(null);
 
   const currentUser = state.currentUser!;
   const profesor = state.users.find(u => u.id === currentUser.profesorId);
@@ -104,11 +106,12 @@ export default function AlumnoPanel() {
                     </div>
                     <p className="text-sm text-gray-600 mb-4">{tarea.consigna}</p>
                     
-                    {asig.estado === 'pendiente' && (
-                      <button className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium">
-                        📹 Grabar y Entregar
-                      </button>
-                    )}
+                    <button
+                      onClick={() => setSelectedTask({ tarea, asignacion: asig })}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium"
+                    >
+                      {asig.estado === 'pendiente' || asig.estado === 'con_correcciones' ? '📹 Ver y Entregar' : '👁️ Ver Detalle'}
+                    </button>
 
                     {asig.estado === 'aprobada' && asig.puntaje !== undefined && (
                       <div className="mt-4 p-4 bg-green-50 rounded-lg">
@@ -125,6 +128,24 @@ export default function AlumnoPanel() {
                 );
               })}
             </div>
+
+            {/* Detalle de tarea */}
+            {selectedTask && (
+              <TaskDetailAlumno
+                tarea={selectedTask.tarea}
+                asignacion={selectedTask.asignacion}
+                entregas={state.entregas.filter(e => e.asignacionId === selectedTask.asignacion.id)}
+                onDeliver={(entrega) => {
+                  dispatch({ type: 'ADD_ENTREGA', payload: entrega });
+                  dispatch({
+                    type: 'UPDATE_ASIGNACION',
+                    payload: { ...selectedTask.asignacion, estado: 'entregada', fechaEntrega: new Date().toISOString() },
+                  });
+                  setSelectedTask(null);
+                }}
+                onClose={() => setSelectedTask(null)}
+              />
+            )}
           </div>
         )}
 

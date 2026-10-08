@@ -4,7 +4,7 @@
 // ============================================================
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { AcademyState, UserProfile, Clase, Tarea, TareaAsignacion, Rudimento, Groove, Notificacion } from '../types/academy';
+import { AcademyState, UserProfile, Clase, Tarea, TareaAsignacion, Entrega, Rudimento, Groove, Notificacion } from '../types/academy';
 
 // Datos de ejemplo (seed)
 const seedUsers: UserProfile[] = [
@@ -128,9 +128,19 @@ const seedTareas: Tarea[] = [
     titulo: 'Práctica de Single Stroke Roll',
     consigna: 'Practicar single stroke roll durante 15 minutos diarios. Grabar video a 80, 100 y 120 BPM.',
     materialUrls: [],
-    fechaLimite: '2024-12-25T23:59:59Z',
+    fechaLimite: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // En 7 días
     puntajeMaximo: 100,
     createdAt: '2024-12-10T00:00:00Z',
+  },
+  {
+    id: 'tarea-2',
+    profesorId: 'prof-1',
+    titulo: 'Groove de Rock Básico',
+    consigna: 'Aprender el groove de rock básico. Grabar video tocando durante 1 minuto sin parar.',
+    materialUrls: [],
+    fechaLimite: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), // En 10 días
+    puntajeMaximo: 100,
+    createdAt: '2024-12-12T00:00:00Z',
   },
 ];
 
@@ -142,6 +152,22 @@ const seedAsignaciones: TareaAsignacion[] = [
     estado: 'pendiente',
     correccionMediaUrls: [],
     createdAt: '2024-12-10T00:00:00Z',
+  },
+  {
+    id: 'asig-2',
+    tareaId: 'tarea-2',
+    alumnoId: 'alumno-1',
+    estado: 'pendiente',
+    correccionMediaUrls: [],
+    createdAt: '2024-12-12T00:00:00Z',
+  },
+  {
+    id: 'asig-3',
+    tareaId: 'tarea-2',
+    alumnoId: 'alumno-2',
+    estado: 'pendiente',
+    correccionMediaUrls: [],
+    createdAt: '2024-12-12T00:00:00Z',
   },
 ];
 
@@ -194,6 +220,7 @@ type AcademyAction =
   | { type: 'ADD_TAREA'; payload: Tarea }
   | { type: 'ADD_ASIGNACION'; payload: TareaAsignacion }
   | { type: 'UPDATE_ASIGNACION'; payload: TareaAsignacion }
+  | { type: 'ADD_ENTREGA'; payload: Entrega }
   | { type: 'MARK_NOTIFICATION_READ'; payload: string };
 
 // Reducer
@@ -219,6 +246,8 @@ function academyReducer(state: AcademyState, action: AcademyAction): AcademyStat
       return { ...state, asignaciones: [...state.asignaciones, action.payload] };
     case 'UPDATE_ASIGNACION':
       return { ...state, asignaciones: state.asignaciones.map(a => a.id === action.payload.id ? action.payload : a) };
+    case 'ADD_ENTREGA':
+      return { ...state, entregas: [...state.entregas, action.payload] };
     case 'MARK_NOTIFICATION_READ':
       return { ...state, notificaciones: state.notificaciones.map(n => n.id === action.payload ? { ...n, leida: true } : n) };
     default:

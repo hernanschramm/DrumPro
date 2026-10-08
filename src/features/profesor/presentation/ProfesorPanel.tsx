@@ -9,6 +9,7 @@ import { Tarea, TareaAsignacion, Clase } from '../../../types/academy';
 import CalendarView from '../../clases/presentation/CalendarView';
 import ClassForm from '../../clases/presentation/ClassForm';
 import ClassDetail from '../../clases/presentation/ClassDetail';
+import GradePanel, { CriterioCalificacion } from '../../tareas/presentation/GradePanel';
 
 export default function ProfesorPanel() {
   const { state, dispatch } = useAcademy();
@@ -16,6 +17,7 @@ export default function ProfesorPanel() {
   const [showClassForm, setShowClassForm] = useState(false);
   const [editingClass, setEditingClass] = useState<Clase | null>(null);
   const [selectedClass, setSelectedClass] = useState<Clase | null>(null);
+  const [gradingAsignacion, setGradingAsignacion] = useState<TareaAsignacion | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskForm, setTaskForm] = useState({
     titulo: '',
@@ -410,7 +412,7 @@ export default function ProfesorPanel() {
                             </div>
                             {asig.estado === 'entregada' && (
                               <button
-                                onClick={() => handleGradeAssignment(asig)}
+                                onClick={() => setGradingAsignacion(asig)}
                                 className="px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-sm font-medium"
                               >
                                 Calificar
@@ -424,6 +426,33 @@ export default function ProfesorPanel() {
                 );
               })}
             </div>
+
+            {/* Panel de calificación */}
+            {gradingAsignacion && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                  <div className="p-6">
+                    <GradePanel
+                      asignacion={gradingAsignacion}
+                      tarea={state.tareas.find(t => t.id === gradingAsignacion.tareaId)!}
+                      onGrade={(puntaje, feedback, criterios) => {
+                        dispatch({
+                          type: 'UPDATE_ASIGNACION',
+                          payload: {
+                            ...gradingAsignacion,
+                            estado: 'aprobada',
+                            puntaje,
+                            correccionTexto: feedback,
+                          },
+                        });
+                        setGradingAsignacion(null);
+                      }}
+                      onCancel={() => setGradingAsignacion(null)}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
